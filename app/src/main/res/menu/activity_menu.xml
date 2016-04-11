@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/main_activity"
+        android:title="START"/>
+    <item
+        android:id="@+id/graph_activity"
+        android:title="WYKRESY"/>
+    <item
+        android:id="@+id/quit"
+        android:title="QUIT"/>
+</menu>
