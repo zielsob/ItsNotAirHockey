@@ -8,25 +8,34 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.tomek.itsnotairhockey.GraphActivity"
-    android:background="#333333">
+    android:background="#000000">
 
-    <ImageView
-        android:layout_width="350dp"
-        android:layout_height="160dp"
-        android:id="@+id/imageView"
-        android:src="#ffffff"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="35dp" />
-
-    <ImageView
-        android:layout_width="350dp"
-        android:layout_height="180dp"
-        android:id="@+id/imageView2"
-        android:src="#ffffff"
-        android:layout_marginBottom="36dp"
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start"
+        android:id="@+id/StartStopButton"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Czestotliwosc"
+        android:id="@+id/frequency_text"
+        android:layout_marginRight="88dp"
+        android:layout_marginEnd="88dp"
+        android:layout_alignBottom="@+id/StartStopButton"
+        android:layout_alignRight="@+id/ImageView01"
+        android:layout_alignEnd="@+id/ImageView01"
+        android:textColor="#ffffff" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/ImageView01"
+        android:layout_above="@+id/StartStopButton"
+        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>

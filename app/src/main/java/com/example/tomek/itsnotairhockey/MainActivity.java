@@ -1,92 +1,48 @@
 package com.example.tomek.itsnotairhockey;
 
+import android.app.AlertDialog;
 import android.content.Intent;
-import android.os.SystemClock;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
+import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.support.v7.app.ActionBarActivity;
-//---------------------
-import android.os.Handler;
-//---------------------
 
 public class MainActivity extends AppCompatActivity {
     int volume;
     private SoundMeter mSensor;
     MenuItem item;
-    //--------------------
     private Handler handler;
-    //--------------------
-
-    private static final int PROGRESS = 0x1;
     private ProgressBar  mProgress;
-    private int mProgressStatus = 0;
-
-    private Handler mHandler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         mProgress = (ProgressBar) findViewById(R.id.progressBar);
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while(true){
-
-
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            mProgress.setProgress(volume);
-                        }
-                    });
-
-
-                }
-            }
-        }).start();
-
-
-
+        mSensor = new SoundMeter();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        decibelMeter();
+    }
 
-        mSensor = new SoundMeter();
-        try {
-            mSensor.start();
-        } catch (IllegalStateException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        //-------------------------------------------------------
-        handler = new Handler();
-        final Runnable r = new Runnable() {
-            public void run() {
-                //mSensor.start();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                         volume = (int)(20 * Math.log10(mSensor.getTheAmplitude() / 51805 / 0.00002));
-                        if (volume >= 0) {
-                            updateTextView(R.id.volumeLevel, "Volume: " + String.valueOf(volume) + "[dB]");
-                        }
-                        handler.postDelayed(this, 100); // amount of delay between every cycle of volume level detection
-                    }
-                });
-            }
-        };
-        handler.postDelayed(r, 250);    // NECESSARY -  w/o the loop never runs this tells Java to run "r"
-        //-------------------------------------------------------
+    @Override
+    protected void onResume() {
+        super.onResume();
+        decibelMeter();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        decibelMeter();
     }
 
     @Override
@@ -98,10 +54,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        mSensor.stop();//--------------------------
+        mSensor.stop();
         finish();
     }
-
+/*
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         this.item = item;
@@ -109,15 +65,69 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, GraphActivity.class);
             startActivity(intent);
         }
-        if (item.getItemId() == R.id.quit) {
-            System.exit(0);
-        }
+        if (item.getItemId() == R.id.quit) System.exit(0);
         return super.onOptionsItemSelected(item);
     }
+*/
 
+    //----------------
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.graph_activity:
+                Intent intent = new Intent(this, GraphActivity.class);
+                startActivity(intent);
+                return true;
+            case R.id.quit:
+                System.exit(0);
+            case R.id.info:
+                showInstructions();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+    //----------------
     public void updateTextView(int text_id, String toThis) {
         TextView val = (TextView) findViewById(text_id);
         val.setText(toThis);
         return;
+    }
+
+    public void showInstructions() {
+        TextView tv = new TextView(this);
+        tv.setMovementMethod(new ScrollingMovementMethod());
+        tv.setText(Html.fromHtml(getString(R.string.instructions_text)));
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.instructions_title)
+                .setView(tv)
+                .setNegativeButton(R.string.dismiss, null)
+                .create().show();
+    }
+
+    public void decibelMeter(){
+        try {
+            mSensor.start();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
+
+        handler = new Handler();
+        final Runnable r = new Runnable() {
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        volume = (int)(20 * Math.log10(mSensor.getTheAmplitude() / 51805 / 0.00002));
+                        if (volume >= 0) {
+                            updateTextView(R.id.volumeLevel, "Volume: " + String.valueOf(volume) + "[dB]");
+                            mProgress.setProgress(volume);
+                        }
+                        handler.postDelayed(this, 100); // opoznienie pomiedzy kolejnym pomiarem poziomu
+                    }
+                });
+            }
+        };
+        handler.postDelayed(r, 250);    // KONIECZNE -  bez tego petla nie ruszy ("this tells Java to run "r"")
     }
 }

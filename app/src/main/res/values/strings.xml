@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">ItsNotAirHockey</string>
+    <string name="instructions_text">&lt;h2&gt;Piotr Zieliński&lt;/h2&gt;
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vestibulum malesuada elit, et gravida magna cursus ac. Integer elit tortor, porttitor interdum ultricies et, ultricies quis nisi. Nam in justo commodo, faucibus ex ut, venenatis velit. Cras ac dolor imperdiet, eleifend enim non, dignissim magna. Nunc ac accumsan velit.
+&lt;br/&gt;
+
+&lt;h2&gt;Tomasz Sobieszuk&lt;/h2&gt;
+Cras hendrerit erat vitae ullamcorper fringilla. Suspendisse tristique quam sed odio tincidunt faucibus. Duis quis magna rhoncus, placerat ligula in, aliquet velit. Donec iaculis, dolor id ullamcorper commodo, quam leo pharetra sapien, ut efficitur erat lacus ut tellus. Maecenas odio tellus, aliquet in justo vitae, pellentesque pretium ligula. Phasellus eleifend hendrerit lacinia. Interdum et malesuada fames ac ante ipsum primis in faucibus.
+&lt;/p&gt;</string>
+    <string name="instructions_title">      Authors</string>
+    <string name="dismiss">      Dismiss</string>
 </resources>
