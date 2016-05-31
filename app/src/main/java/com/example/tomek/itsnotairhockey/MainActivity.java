@@ -15,7 +15,6 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity {
     int volume;
     private SoundMeter mSensor;
-    MenuItem item;
     private Handler handler;
     private ProgressBar  mProgress;
 
@@ -28,20 +27,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        decibelMeter();
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
-        decibelMeter();
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
         decibelMeter();
     }
 
@@ -57,20 +44,7 @@ public class MainActivity extends AppCompatActivity {
         mSensor.stop();
         finish();
     }
-/*
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        this.item = item;
-        if (item.getItemId() == R.id.graph_activity) {
-            Intent intent = new Intent(this, GraphActivity.class);
-            startActivity(intent);
-        }
-        if (item.getItemId() == R.id.quit) System.exit(0);
-        return super.onOptionsItemSelected(item);
-    }
-*/
 
-    //----------------
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -123,11 +97,11 @@ public class MainActivity extends AppCompatActivity {
                             updateTextView(R.id.volumeLevel, "Volume: " + String.valueOf(volume) + "[dB]");
                             mProgress.setProgress(volume);
                         }
-                        handler.postDelayed(this, 100); // opoznienie pomiedzy kolejnym pomiarem poziomu
+                        handler.postDelayed(this, 100);
                     }
                 });
             }
         };
-        handler.postDelayed(r, 250);    // KONIECZNE -  bez tego petla nie ruszy ("this tells Java to run "r"")
+        handler.postDelayed(r, 250);
     }
 }

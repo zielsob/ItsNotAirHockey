@@ -2,18 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/main_activity"
-        android:title="START"/>
+        android:title="Start"/>
     <item
         android:id="@+id/graph_activity"
-        android:title="WYKRESY"/>
+        android:title="Graphs"/>
     <item
         android:id="@+id/info"
         android:enabled="true"
         android:icon="@android:drawable/ic_menu_info_details"
         android:menuCategory="container"
-        android:title="User Manual"
+        android:title="Authors"
         android:titleCondensed="info"/>
     <item
         android:id="@+id/quit"
-        android:title="QUIT"/>
+        android:title="Quit"/>
 </menu>

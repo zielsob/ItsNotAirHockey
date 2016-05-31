@@ -25,49 +25,41 @@ import android.widget.TextView;
 
 import ca.uol.aig.fftpack.RealDoubleFFT;
 
-//---------
-//--------
 
 public class GraphActivity extends AppCompatActivity implements OnClickListener {
-
-    MenuItem item;
 
     int frequency = 8000;
     int channelConfiguration = AudioFormat.CHANNEL_CONFIGURATION_MONO;
     int audioEncoding = AudioFormat.ENCODING_PCM_16BIT;
-    private RealDoubleFFT transformer;
-    int blockSize = 256;
+    private RealDoubleFFT realDoubleFFT;
+    int dataSize = 256;
 
-    Button startStopButton;
+    Button buttonStartStop;
     boolean started = false;
 
     RecordAudio recordTask;
 
-    ImageView imageView;
+    ImageView graphView;
     Bitmap bitmap;
     Canvas canvas;
     Paint paint;
-
-    private TextView frequency_text;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graph);
 
-        startStopButton = (Button) this.findViewById(R.id.StartStopButton);
-        startStopButton.setOnClickListener(this);
+        buttonStartStop = (Button) this.findViewById(R.id.buttonStartStop);
+        buttonStartStop.setOnClickListener(this);
 
-        transformer = new RealDoubleFFT(blockSize);
+        realDoubleFFT = new RealDoubleFFT(dataSize);
 
-        imageView = (ImageView) this.findViewById(R.id.ImageView01);
+        graphView = (ImageView) this.findViewById(R.id.GraphView);
         bitmap = Bitmap.createBitmap((int) 256, (int) 300, Bitmap.Config.ARGB_8888);
         canvas = new Canvas(bitmap);
         paint = new Paint();
         paint.setColor(Color.GREEN);
-        imageView.setImageBitmap(bitmap);
-
-        frequency_text = (TextView)findViewById(R.id.frequency_text);
+        graphView.setImageBitmap(bitmap);
     }
 
     public class RecordAudio extends AsyncTask<Void, double[], Void> {
@@ -76,16 +68,16 @@ public class GraphActivity extends AppCompatActivity implements OnClickListener 
             try {
                 int bufferSize = AudioRecord.getMinBufferSize(frequency, channelConfiguration, audioEncoding);
                 AudioRecord audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, frequency, channelConfiguration, audioEncoding, bufferSize);
-                short[] buffer = new short[blockSize];
-                double[] toTransform = new double[blockSize];
+                short[] buffer = new short[dataSize];
+                double[] transformFFT = new double[dataSize];
                 audioRecord.startRecording();
                 while (started) {
-                    int bufferReadResult = audioRecord.read(buffer, 0, blockSize);
-                    for (int i = 0; i < blockSize && i < bufferReadResult; i++) {
-                        toTransform[i] = (double) buffer[i] / 32768.0;
+                    int checkReadResult = audioRecord.read(buffer, 0, dataSize);
+                    for (int i = 0; i < dataSize && i < checkReadResult; i++) {
+                        transformFFT[i] = (double) buffer[i] / 32768.0;
                     }
-                    transformer.ft(toTransform);
-                    publishProgress(toTransform);
+                    realDoubleFFT.ft(transformFFT);
+                    publishProgress(transformFFT);
                 }
                 audioRecord.stop();
             } catch (Throwable t) {
@@ -96,15 +88,15 @@ public class GraphActivity extends AppCompatActivity implements OnClickListener 
         }
 
         @Override
-        protected void onProgressUpdate(double[]... toTransform) {
+        protected void onProgressUpdate(double[]... transformFFT) {
             canvas.drawColor(Color.BLACK);
-            for (int i = 0; i < toTransform[0].length; i++) {
-                int x = i;
-                int downy = (int) (150 - (toTransform[0][i] * 10));
-                int upy = 150;
-                canvas.drawLine(x, downy, x, upy, paint);
+            for (int i = 0; i < transformFFT[0].length; i++) {
+                int axis_X = i;
+                int axis_downY = (int) (150 - (transformFFT[0][i] * 10));
+                int axis_upY = 150;
+                canvas.drawLine(axis_X, axis_downY, axis_X, axis_upY, paint);
             }
-            imageView.invalidate();
+            graphView.invalidate();
         }
     }
 
@@ -117,30 +109,18 @@ public class GraphActivity extends AppCompatActivity implements OnClickListener 
     public void onClick(View arg0) {
         if (started) {
             started = false;
-            startStopButton.setText("Start");
+            buttonStartStop.setText("Start");
             recordTask.cancel(true);
         } else {
             started = true;
-            startStopButton.setText("Stop");
+            buttonStartStop.setText("Stop");
             recordTask = new RecordAudio();
             recordTask.execute();
         }
     }
-/*
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        this.item = item;
-        if (item.getItemId() == R.id.main_activity) {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-        }
-        if (item.getItemId() == R.id.quit) System.exit(0);
-        return super.onOptionsItemSelected(item);
-    }*/
-    //---------------------
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        //Log.i(TAG, item.toString());
         switch (item.getItemId()) {
             case R.id.main_activity:
                 Intent intent = new Intent(this, MainActivity.class);
@@ -155,7 +135,6 @@ public class GraphActivity extends AppCompatActivity implements OnClickListener 
                 return super.onOptionsItemSelected(item);
         }
     }
-    //---------------------
 
     @Override
     protected void onPause() {

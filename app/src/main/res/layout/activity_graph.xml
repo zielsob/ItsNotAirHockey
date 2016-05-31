@@ -14,28 +14,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Start"
-        android:id="@+id/StartStopButton"
+        android:id="@+id/buttonStartStop"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Czestotliwosc"
-        android:id="@+id/frequency_text"
-        android:layout_marginRight="88dp"
-        android:layout_marginEnd="88dp"
-        android:layout_alignBottom="@+id/StartStopButton"
-        android:layout_alignRight="@+id/ImageView01"
-        android:layout_alignEnd="@+id/ImageView01"
-        android:textColor="#ffffff" />
+        android:layout_centerHorizontal="true" />
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/ImageView01"
-        android:layout_above="@+id/StartStopButton"
+        android:id="@+id/GraphView"
+        android:layout_above="@+id/buttonStartStop"
         android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
